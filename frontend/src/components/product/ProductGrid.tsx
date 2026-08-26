@@ -1,3 +1,23 @@
+import { featuredProducts, products } from "@/data/products";
 import { ProductCard } from "./ProductCard";
-const products = [{name:"Classic Oversized Shirt",price:"$79"},{name:"Minimal Tailored Jacket",price:"$149"},{name:"Relaxed Cotton Trousers",price:"$89"},{name:"Essential Knit Sweater",price:"$99"},{name:"Structured Everyday Coat",price:"$189"},{name:"Soft Ribbed Top",price:"$69"},{name:"Modern Straight Jeans",price:"$109"},{name:"Signature Blazer",price:"$169"}];
-export function ProductGrid() { return <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{products.map(p=><ProductCard key={p.name} {...p}/>)}</div>; }
+
+type ProductGridProps = {
+  limit?: number;
+  featured?: boolean;
+};
+
+export function ProductGrid({
+  limit,
+  featured = false,
+}: ProductGridProps) {
+  const source = featured ? featuredProducts : products;
+  const items = limit ? source.slice(0, limit) : source;
+
+  return (
+    <div className="grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+      {items.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+}
