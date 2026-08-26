@@ -1,0 +1,1 @@
+export function SalesPlaceholder(){return <div className="mt-4 flex h-72 items-center justify-center rounded-lg bg-gray-50"><p className="text-sm text-gray-500">Analytics chart will be connected in a later development day.</p></div>;}

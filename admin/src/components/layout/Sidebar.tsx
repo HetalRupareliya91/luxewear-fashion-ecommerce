@@ -1,0 +1,3 @@
+import Link from "next/link";
+const items=[["Dashboard","/"],["Products","/products"],["Categories","/categories"],["Orders","/orders"],["Customers","/customers"],["Inventory","/inventory"],["Coupons","/coupons"],["Reviews","/reviews"],["Analytics","/analytics"],["Settings","/settings"]];
+export function Sidebar(){return <aside className="hidden w-64 shrink-0 border-r bg-white lg:block"><div className="border-b px-6 py-5"><Link href="/" className="text-xl font-bold">LuxeWear Admin</Link></div><nav className="p-4">{items.map(([name,href])=><Link key={href} href={href} className="mb-1 block rounded-lg px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100">{name}</Link>)}</nav></aside>;}

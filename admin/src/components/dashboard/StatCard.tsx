@@ -1,0 +1,1 @@
+export function StatCard({title,value,change}:{title:string;value:string;change:string}){return <div className="rounded-xl border bg-white p-6"><p className="text-sm text-gray-500">{title}</p><p className="mt-3 text-2xl font-bold">{value}</p><p className="mt-2 text-sm text-gray-500">{change} from last month</p></div>;}

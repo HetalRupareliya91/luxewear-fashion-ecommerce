@@ -1,0 +1,5 @@
+@import "tailwindcss";
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #fff; color: #171717; }
+button, a { -webkit-tap-highlight-color: transparent; }
