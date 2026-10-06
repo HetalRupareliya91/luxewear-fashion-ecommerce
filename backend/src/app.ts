@@ -6,10 +6,12 @@ import { env } from "./config/env.js";
 import routes from "./routes/index.js";
 import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { requestId } from "./middleware/requestId.js";
 
 const app=express();
 app.use(cors({origin:env.frontendUrl,credentials:true}));
 app.use(helmet());
+app.use(requestId);
 app.use(morgan("dev"));
 app.use(express.json());
 app.get("/",(_req,res)=>res.json({name:"LuxeWear API",version:"1.0.0",status:"running"}));
