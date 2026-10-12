@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { WishlistButton } from "@/components/wishlist/WishlistButton";
 import type { Product } from "@/data/products";
 import { discountPercent, formatPrice } from "@/utils/format";
 
@@ -9,7 +10,7 @@ type ProductCardProps = {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <article className="group">
+    <article className="group relative">
       <Link href={`/product/${product.id}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100">
           <Image
@@ -27,6 +28,8 @@ export function ProductCard({ product }: ProductCardProps) {
           ) : null}
         </div>
       </Link>
+
+      <WishlistButton productId={product.id} name={product.name} className="absolute right-3 top-3" />
 
       <div className="flex items-start justify-between gap-4 pt-4">
         <div>
