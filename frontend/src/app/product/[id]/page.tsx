@@ -5,6 +5,7 @@ import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import { Container } from "@/components/common/Container";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { RatingStars } from "@/components/product/RatingStars";
+import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { products } from "@/data/products";
 import { getProductDetails } from "@/data/productDetails";
 import { getProductById } from "@/utils/catalog";
@@ -50,6 +51,8 @@ export default async function ProductPage({ params }: PageProps) {
           </div>
 
           <p className="mt-6 leading-7 text-gray-600">{details.description}</p>
+
+          <ProductPurchase productId={product.id} sizes={details.sizes} />
 
           <div className="mt-8 divide-y border-y text-sm">
             <details className="py-4" open>
