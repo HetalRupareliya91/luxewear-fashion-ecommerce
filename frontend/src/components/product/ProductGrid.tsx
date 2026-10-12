@@ -1,16 +1,19 @@
-import { featuredProducts, products } from "@/data/products";
+import { featuredProducts, products, type Product } from "@/data/products";
 import { ProductCard } from "./ProductCard";
 
 type ProductGridProps = {
   limit?: number;
   featured?: boolean;
+  /** Show exactly these products instead of the default catalog. */
+  items?: Product[];
 };
 
 export function ProductGrid({
   limit,
   featured = false,
+  items: given,
 }: ProductGridProps) {
-  const source = featured ? featuredProducts : products;
+  const source = given ?? (featured ? featuredProducts : products);
   const items = limit ? source.slice(0, limit) : source;
 
   return (
