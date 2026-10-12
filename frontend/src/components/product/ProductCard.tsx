@@ -10,7 +10,7 @@ type ProductCardProps = {
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <article className="group">
-      <Link href={`/shop?product=${product.id}`} className="block">
+      <Link href={`/product/${product.id}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100">
           <Image
             src={product.image}
@@ -34,7 +34,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.category}
           </p>
           <Link
-            href={`/shop?product=${product.id}`}
+            href={`/product/${product.id}`}
             className="mt-1 block font-semibold hover:underline"
           >
             {product.name}
