@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { CategoryTabs } from "@/components/shop/CategoryTabs";
 import { ClearFilters } from "@/components/shop/ClearFilters";
+import { PriceFilter } from "@/components/shop/PriceFilter";
 import { SortSelect } from "@/components/shop/SortSelect";
 import { products } from "@/data/products";
 import { filterProducts, parseShopParams, type SearchParams } from "@/utils/catalog";
@@ -25,6 +26,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           <CategoryTabs />
           <div className="flex flex-wrap items-center gap-4">
             <SortSelect />
+            <PriceFilter />
             <ClearFilters />
           </div>
         </div>
