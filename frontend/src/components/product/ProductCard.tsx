@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/data/products";
+import { discountPercent, formatPrice } from "@/utils/format";
 
 type ProductCardProps = {
   product: Product;
@@ -41,10 +42,15 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <div className="shrink-0 text-right">
-          <p className="font-semibold">${product.price}</p>
+          <p className="font-semibold">{formatPrice(product.price)}</p>
           {product.compareAtPrice ? (
             <p className="text-xs text-gray-400 line-through">
-              ${product.compareAtPrice}
+              {formatPrice(product.compareAtPrice)}
+            </p>
+          ) : null}
+          {discountPercent(product.price, product.compareAtPrice) > 0 ? (
+            <p className="text-xs font-semibold text-red-600">
+              Save {discountPercent(product.price, product.compareAtPrice)}%
             </p>
           ) : null}
         </div>
