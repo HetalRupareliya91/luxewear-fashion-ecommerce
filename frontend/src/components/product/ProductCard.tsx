@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { WishlistButton } from "@/components/wishlist/WishlistButton";
 import type { Product } from "@/data/products";
+import { discountPercent, formatPrice } from "@/utils/format";
 
 type ProductCardProps = {
   product: Product;
@@ -8,8 +10,8 @@ type ProductCardProps = {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <article className="group">
-      <Link href={`/shop?product=${product.id}`} className="block">
+    <article className="group relative">
+      <Link href={`/product/${product.id}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100">
           <Image
             src={product.image}
@@ -27,13 +29,15 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
 
+      <WishlistButton productId={product.id} name={product.name} className="absolute right-3 top-3" />
+
       <div className="flex items-start justify-between gap-4 pt-4">
         <div>
           <p className="text-xs uppercase tracking-[0.15em] text-gray-500">
             {product.category}
           </p>
           <Link
-            href={`/shop?product=${product.id}`}
+            href={`/product/${product.id}`}
             className="mt-1 block font-semibold hover:underline"
           >
             {product.name}
@@ -41,10 +45,15 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <div className="shrink-0 text-right">
-          <p className="font-semibold">${product.price}</p>
+          <p className="font-semibold">{formatPrice(product.price)}</p>
           {product.compareAtPrice ? (
             <p className="text-xs text-gray-400 line-through">
-              ${product.compareAtPrice}
+              {formatPrice(product.compareAtPrice)}
+            </p>
+          ) : null}
+          {discountPercent(product.price, product.compareAtPrice) > 0 ? (
+            <p className="text-xs font-semibold text-red-600">
+              Save {discountPercent(product.price, product.compareAtPrice)}%
             </p>
           ) : null}
         </div>

@@ -12,3 +12,9 @@
 - Shared helpers: money (cents), slugs, pagination, API responses, AppError
 - Security: validated env, request ids, rate limiting, scrypt passwords, signed tokens, auth middleware
 - Commerce rules with unit tests: shipping, tax, coupons, cart totals, order status flow, stock reservation, ratings, analytics
+
+## Day 3
+- Storefront: working shop filters/sort/price, search, product pages with sizes
+- Cart, wishlist and checkout flow (client side, saved in localStorage)
+- Order confirmation and order history, working newsletter and contact forms
+- New pages: FAQ, returns, cart, checkout, account
