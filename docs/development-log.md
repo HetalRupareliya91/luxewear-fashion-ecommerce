@@ -18,3 +18,7 @@
 - Cart, wishlist and checkout flow (client side, saved in localStorage)
 - Order confirmation and order history, working newsletter and contact forms
 - New pages: FAQ, returns, cart, checkout, account
+
+## Day 4
+- Admin: dashboard with real stats and SVG chart, products, categories, orders (+detail), customers, inventory, coupons, reviews, analytics, settings
+- Storefront: privacy, terms, sitemap/robots, error and loading screens, toast notifications, richer About page
