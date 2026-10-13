@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/common/Button";
+import { useToast } from "@/components/common/Toast";
 import { MAX_QUANTITY } from "@/store/cart";
 import { useCart } from "@/store/CartContext";
 
 export function ProductPurchase({ productId, sizes }: { productId: string; sizes: string[] }) {
   const { add } = useCart();
+  const toast = useToast();
   const [size, setSize] = useState(sizes.length === 1 ? sizes[0] : "");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
@@ -20,6 +22,7 @@ export function ProductPurchase({ productId, sizes }: { productId: string; sizes
     }
     setError("");
     add({ productId, size, quantity });
+    toast.show("Added to your cart");
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2500);
   }
