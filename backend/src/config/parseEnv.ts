@@ -9,6 +9,8 @@ export type Env = {
   cookieSameSite: "lax" | "strict" | "none";
   /** Always true in production and whenever SameSite=None (browsers require it). */
   cookieSecure: boolean;
+  /** Shared secret used to check webhook signatures from the payment company. */
+  paymentWebhookSecret: string;
 };
 
 const NODE_ENVS = ["development", "test", "production"] as const;
@@ -21,9 +23,13 @@ export function parseEnv(source: Record<string, string | undefined>): Env {
   const jwtSecret = source.JWT_SECRET ?? "";
   const ttl = Number(source.TOKEN_TTL_SECONDS);
   const cookieSameSite = SAME_SITE.find((v) => v === source.COOKIE_SAMESITE?.toLowerCase()) ?? "lax";
+  const paymentWebhookSecret = source.PAYMENT_WEBHOOK_SECRET ?? "";
 
   if (nodeEnv === "production" && (jwtSecret.length < 32 || jwtSecret.startsWith("replace-with"))) {
     throw new Error("JWT_SECRET must be a strong secret (32+ characters) in production");
+  }
+  if (nodeEnv === "production" && (paymentWebhookSecret.length < 32 || paymentWebhookSecret.startsWith("replace-with"))) {
+    throw new Error("PAYMENT_WEBHOOK_SECRET must be a strong secret (32+ characters) in production");
   }
 
   return {
@@ -35,5 +41,6 @@ export function parseEnv(source: Record<string, string | undefined>): Env {
     tokenTtlSeconds: Number.isFinite(ttl) && ttl >= 60 ? Math.floor(ttl) : 7 * 24 * 60 * 60,
     cookieSameSite,
     cookieSecure: nodeEnv === "production" || cookieSameSite === "none",
+    paymentWebhookSecret: paymentWebhookSecret || "dev-only-webhook-secret",
   };
 }
