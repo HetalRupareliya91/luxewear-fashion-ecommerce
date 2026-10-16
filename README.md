@@ -1,6 +1,6 @@
 # LuxeWear Fashion E-Commerce
 
-Scalable Day 1 monorepo foundation for a fashion e-commerce platform.
+A fashion e-commerce platform: customer storefront, REST API and admin panel in one monorepo.
 
 ## Applications
 - `frontend`: Next.js customer storefront
@@ -45,5 +45,23 @@ npm run dev
 ```
 http://localhost:3001
 
-## Day 1
-Foundation only. Business features are intentionally added in later development days.
+## Features
+- Storefront: shop filters and search, product pages, cart, wishlist, checkout, sign-in, account settings and order history
+- API: sign-in with cookie sessions, server-priced orders with stock control, coupons, payments through a signed webhook, reviews from verified buyers, wishlists
+- Admin API: dashboard summary, orders, customers, products and coupons (the admin panel itself still shows sample data)
+
+## Sample data
+```bash
+cd backend
+npx prisma migrate dev
+npm run db:seed
+```
+
+## Documentation
+- [API reference](docs/api.md)
+- [Authentication](docs/auth.md)
+- [Payments](docs/payments.md)
+- [Architecture](docs/architecture.md)
+- [Testing](docs/testing.md)
+- [Deployment](docs/deployment.md)
+- [Storefront](docs/frontend.md), [admin](docs/admin.md), [git workflow](docs/git-workflow.md)
