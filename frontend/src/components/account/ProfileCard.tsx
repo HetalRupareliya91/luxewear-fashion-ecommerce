@@ -27,6 +27,7 @@ export function ProfileCard() {
       <div>
         <p className="text-lg font-semibold">{user.firstName}{user.lastName ? ` ${user.lastName}` : ""}</p>
         <p className="text-sm text-gray-600">{user.email}</p>
+        <Link href="/account/settings" className="mt-2 inline-block text-sm underline">Edit profile and password</Link>
         {user.role === "ADMIN" ? <p className="mt-1 inline-block rounded-full bg-black px-2.5 py-0.5 text-xs font-semibold text-white">Admin</p> : null}
       </div>
       <button type="button" className="rounded-full border px-5 py-2 text-sm font-semibold hover:border-black" onClick={async () => { await logout(); toast.show("Signed out"); }}>
