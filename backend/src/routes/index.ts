@@ -6,6 +6,7 @@ import couponRoutes from "../modules/coupons/coupon.routes.js";
 import { adminOrderRoutes, checkoutRoutes, orderRoutes } from "../modules/orders/order.routes.js";
 import paymentRoutes from "../modules/payments/payment.routes.js";
 import reviewRoutes from "../modules/reviews/review.routes.js";
+import wishlistRoutes from "../modules/wishlist/wishlist.routes.js";
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.use("/checkout", checkoutRoutes);
 router.use("/admin/orders", adminOrderRoutes);
 router.use("/payments", paymentRoutes);
 router.use("/reviews", reviewRoutes);
+router.use("/wishlist", wishlistRoutes);
 
 export default router;
