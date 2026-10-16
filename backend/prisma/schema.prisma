@@ -21,6 +21,7 @@ model User {
   role         UserRole @default(CUSTOMER)
   orders       Order[]
   reviews      Review[]
+  wishlist     WishlistItem[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -59,6 +60,7 @@ model Product {
   images      ProductImage[]
   variants    ProductVariant[]
   reviews     Review[]
+  wishlistedBy WishlistItem[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
@@ -160,6 +162,18 @@ model Review {
 
   @@unique([productId, userId])
   @@index([productId])
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
 }
 
 enum CouponType {
