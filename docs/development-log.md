@@ -22,3 +22,9 @@
 ## Day 4
 - Admin: dashboard with real stats and SVG chart, products, categories, orders (+detail), customers, inventory, coupons, reviews, analytics, settings
 - Storefront: privacy, terms, sitemap/robots, error and loading screens, toast notifications, richer About page
+
+## Day 5
+- API: register, login, /me and logout with an HttpOnly cookie session, login rate limit, `npm run admin:create`
+- Fix: malformed JSON now returns 400 instead of 500
+- Storefront: sign-in and create-account pages, account menu, profile on the account page, checkout prefill
+- Docs: authentication guide
