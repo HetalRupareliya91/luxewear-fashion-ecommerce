@@ -27,12 +27,15 @@ src/
     auth/       sign-up, sign-in, cookie sessions, password hashing (scrypt), signed tokens
     products/   catalog API and query parsing
     cart/       cart totals
-    coupons/    coupon rules
+    coupons/    coupon rules, service and /api/coupons
     shipping/   shipping costs
     tax/        tax calculation
-    orders/     status flow and order numbers
+    orders/     pricing, order placement and cancellation, status flow, order numbers
+    payments/   provider contract, signed webhook
+    wishlist/   saved products
+    users/      admin user management
     inventory/  stock reservation
-    reviews/    rating summaries
+    reviews/    verified-buyer reviews and rating summaries
     analytics/  revenue and best-seller summaries
 tests/          *.test.ts, one per module
 ```
