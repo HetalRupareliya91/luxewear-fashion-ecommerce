@@ -8,6 +8,7 @@ import paymentRoutes from "../modules/payments/payment.routes.js";
 import reviewRoutes from "../modules/reviews/review.routes.js";
 import wishlistRoutes from "../modules/wishlist/wishlist.routes.js";
 import userAdminRoutes from "../modules/users/user.routes.js";
+import productAdminRoutes from "../modules/products/product.admin.routes.js";
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.use("/payments", paymentRoutes);
 router.use("/reviews", reviewRoutes);
 router.use("/wishlist", wishlistRoutes);
 router.use("/admin/users", userAdminRoutes);
+router.use("/admin/products", productAdminRoutes);
 
 export default router;
