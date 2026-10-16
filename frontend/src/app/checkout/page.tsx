@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckoutFields } from "@/components/checkout/CheckoutForm";
 import { ShippingMethodPicker } from "@/components/checkout/ShippingMethodPicker";
 import { OrderSummary } from "@/components/cart/OrderSummary";
@@ -12,6 +12,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { products } from "@/data/products";
 import { makeOrderId, saveOrder, type Order } from "@/store/orders";
 import { useCart } from "@/store/CartContext";
+import { useAuth } from "@/store/AuthContext";
 import { calculateTotals, type ShippingMethod } from "@/utils/cartTotals";
 import { getProductById } from "@/utils/catalog";
 import { EMPTY_CHECKOUT, validateCheckout, type CheckoutForm, type FieldErrors } from "@/utils/validators";
@@ -19,9 +20,15 @@ import { EMPTY_CHECKOUT, validateCheckout, type CheckoutForm, type FieldErrors }
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, ready, clear } = useCart();
+  const { user } = useAuth();
   const [form, setForm] = useState<CheckoutForm>(EMPTY_CHECKOUT);
   const [errors, setErrors] = useState<FieldErrors<keyof CheckoutForm>>({});
   const [method, setMethod] = useState<ShippingMethod>("standard");
+
+  useEffect(() => {
+    if (!user) return;
+    setForm((f) => ({ ...f, email: f.email || user.email, firstName: f.firstName || user.firstName, lastName: f.lastName || (user.lastName ?? "") }));
+  }, [user]);
 
   const lines = items.flatMap((item) => {
     const product = getProductById(products, item.productId);
