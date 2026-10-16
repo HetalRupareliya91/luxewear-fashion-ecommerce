@@ -12,6 +12,8 @@ Modular Express 5 + TypeScript API with Prisma/PostgreSQL.
 | `npm run admin:create` | Create or promote an admin (needs `ADMIN_EMAIL` and `ADMIN_PASSWORD`) |
 | `npm run prisma:generate` | Generate the Prisma client |
 | `npm run prisma:migrate` | Create/apply a migration in development |
+| `npm run db:seed` | Add the sample catalogue and two coupons (safe to repeat) |
+| `npm run admin:create` | Create or promote an admin (see docs/auth.md) |
 
 ## Structure
 ```
