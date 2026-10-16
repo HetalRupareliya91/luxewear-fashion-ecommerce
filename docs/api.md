@@ -52,5 +52,12 @@ All routes need a signed-in user.
 - `PUT /api/wishlist/:productId` and `DELETE /api/wishlist/:productId` - add or remove; both return the new list. 404 for an unknown product.
 - `POST /api/wishlist/merge` - `{ productIds }`. Adds the items saved in the browser right after sign-in; unknown ids are skipped.
 
+## Admin (role `ADMIN` only: 401 without a login, 403 for customers)
+- `GET /api/admin/summary?days=30` - revenue, order count, average order value, revenue per day, top 5 products, plus customer, product and pending-order counts.
+- `GET /api/admin/orders` (`?status=&page=&limit=`), `GET /api/admin/orders/:id`, `PATCH /api/admin/orders/:id/status` with `{ status }`. Only allowed moves work (for example `PENDING` to `PAID`, `PAID` to `PROCESSING`); anything else is a 409. Cancelling puts the stock back.
+- `GET /api/admin/users` (`?q=&page=&limit=`), `PATCH /api/admin/users/:id/role` with `{ role }`. You cannot change your own role.
+- `GET /api/admin/products` (`?status=&q=`), `GET /api/admin/products/:id`, `POST /api/admin/products`, `PATCH /api/admin/products/:id`, `DELETE /api/admin/products/:id` (archives; nothing is ever hard-deleted), `PATCH /api/admin/products/variants/:sku/stock` with `{ stock }`. Prices are in dollars with at most two decimals.
+- `GET /api/coupons`, `POST /api/coupons`, `PATCH /api/coupons/:code`, `DELETE /api/coupons/:code`. `value` is a percent (1-100) or, for `FIXED`, an amount in cents.
+
 ## Status codes
 `400` validation failed - `401` missing/invalid token - `403` wrong role - `404` not found - `409` conflict (stock, order status) - `429` rate limited - `500` unexpected error.
