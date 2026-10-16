@@ -21,6 +21,7 @@ model User {
   role         UserRole @default(CUSTOMER)
   orders       Order[]
   reviews      Review[]
+  wishlist     WishlistItem[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -59,6 +60,7 @@ model Product {
   images      ProductImage[]
   variants    ProductVariant[]
   reviews     Review[]
+  wishlistedBy WishlistItem[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
