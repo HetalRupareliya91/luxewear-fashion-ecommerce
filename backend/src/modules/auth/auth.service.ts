@@ -1,5 +1,5 @@
 import { AppError } from "../../errors/AppError.js";
-import type { LoginInput, RegisterInput } from "../../validators/auth.js";
+import type { LoginInput, PasswordChangeInput, ProfileInput, RegisterInput } from "../../validators/auth.js";
 import { hashPassword, verifyPassword } from "./password.js";
 import { signToken } from "./token.js";
 import type { AuthResult, PublicUser, UserRecord, UserRepository } from "./auth.types.js";
@@ -12,6 +12,8 @@ export type AuthService = {
   register(input: RegisterInput): Promise<AuthResult>;
   login(input: LoginInput): Promise<AuthResult>;
   getProfile(userId: string): Promise<PublicUser>;
+  updateProfile(userId: string, input: ProfileInput): Promise<PublicUser>;
+  changePassword(userId: string, input: PasswordChangeInput): Promise<void>;
 };
 
 export function createAuthService({ users, secret, tokenTtlSeconds, now = Date.now }: Deps): AuthService {
@@ -40,6 +42,20 @@ export function createAuthService({ users, secret, tokenTtlSeconds, now = Date.n
       const user = await users.findById(userId);
       if (!user) throw AppError.unauthorized("Account no longer exists");
       return toPublicUser(user);
+    },
+
+    async updateProfile(userId, input) {
+      if (!(await users.findById(userId))) throw AppError.unauthorized("Account no longer exists");
+      return toPublicUser(await users.update(userId, input));
+    },
+
+    async changePassword(userId, { currentPassword, newPassword }) {
+      const user = await users.findById(userId);
+      if (!user) throw AppError.unauthorized("Account no longer exists");
+      // 400, not 401: the person is signed in and only typed the wrong current password
+      if (!(await verifyPassword(currentPassword, user.passwordHash))) throw AppError.badRequest("Validation failed", { currentPassword: "Current password is incorrect" });
+      if (currentPassword === newPassword) throw AppError.badRequest("Validation failed", { newPassword: "Choose a password you have not used just now" });
+      await users.update(userId, { passwordHash: await hashPassword(newPassword) });
     },
   };
 }

@@ -2,7 +2,7 @@ import { Router, type RequestHandler } from "express";
 import { requireAuth } from "../../middleware/auth.js";
 import { validateBody } from "../../middleware/validateBody.js";
 import { sendSuccess } from "../../utils/apiResponse.js";
-import { validateLogin, validateRegister } from "../../validators/auth.js";
+import { validateChangePassword, validateLogin, validateProfileUpdate, validateRegister } from "../../validators/auth.js";
 import { authCookie, clearAuthCookie, type AuthCookieSettings } from "./auth.cookie.js";
 import type { AuthService } from "./auth.service.js";
 import type { TokenPayload } from "./token.js";
@@ -31,6 +31,17 @@ export function createAuthRouter({ service, secret, cookie, limiter }: Deps) {
   router.get("/me", guard, async (_req, res) => {
     const { sub } = res.locals.user as TokenPayload;
     sendSuccess(res, { user: await service.getProfile(sub) });
+  });
+
+  router.patch("/me", guard, validateBody(validateProfileUpdate), async (req, res) => {
+    const { sub } = res.locals.user as TokenPayload;
+    sendSuccess(res, { user: await service.updateProfile(sub, req.body) });
+  });
+
+  router.post("/change-password", guard, limit, validateBody(validateChangePassword), async (req, res) => {
+    const { sub } = res.locals.user as TokenPayload;
+    await service.changePassword(sub, req.body);
+    sendSuccess(res, { changed: true });
   });
 
   router.post("/logout", (_req, res) => {
