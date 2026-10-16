@@ -13,6 +13,9 @@ import { products } from "@/data/products";
 import { makeOrderId, saveOrder, type Order } from "@/store/orders";
 import { useCart } from "@/store/CartContext";
 import { useAuth } from "@/store/AuthContext";
+import { ApiError } from "@/services/api";
+import { placeOrder } from "@/services/orders";
+import { toPlaceOrderInput } from "@/utils/apiOrder";
 import { calculateTotals, type ShippingMethod } from "@/utils/cartTotals";
 import { getProductById } from "@/utils/catalog";
 import { EMPTY_CHECKOUT, validateCheckout, type CheckoutForm, type FieldErrors } from "@/utils/validators";
@@ -24,6 +27,8 @@ export default function CheckoutPage() {
   const [form, setForm] = useState<CheckoutForm>(EMPTY_CHECKOUT);
   const [errors, setErrors] = useState<FieldErrors<keyof CheckoutForm>>({});
   const [method, setMethod] = useState<ShippingMethod>("standard");
+  const [formError, setFormError] = useState("");
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -36,14 +41,31 @@ export default function CheckoutPage() {
   });
   const totals = calculateTotals(lines.map((l) => ({ price: l.product.price, quantity: l.item.quantity })), method);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const found = validateCheckout(form);
     setErrors(found);
     if (Object.keys(found).length > 0) return;
 
+    setFormError("");
+    let orderId = makeOrderId();
+    if (user) {
+      setBusy(true);
+      try {
+        orderId = (await placeOrder(toPlaceOrderInput(form, method, items))).number;
+      } catch (error) {
+        // Server unreachable or catalogue not loaded: keep the browser-only demo working. Everything else is shown to the customer.
+        if (!(error instanceof ApiError && (error.status === 0 || error.status === 404))) {
+          setFormError(error instanceof ApiError ? error.message : "Something went wrong. Please try again.");
+          setBusy(false);
+          return;
+        }
+      }
+      setBusy(false);
+    }
+
     const order: Order = {
-      id: makeOrderId(),
+      id: orderId,
       placedAt: new Date().toISOString(),
       customer: form,
       shippingMethod: method,
@@ -68,7 +90,7 @@ export default function CheckoutPage() {
             <CheckoutFields values={form} errors={errors} onChange={(field, value) => setForm((f) => ({ ...f, [field]: value }))} />
           </section>
           <ShippingMethodPicker value={method} onChange={setMethod} />
-          <p className="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">Demo checkout: no payment is taken and your order is saved only in this browser.</p>
+          <p className="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">Demo checkout: no payment is taken. Orders placed while signed in are also saved to your account.</p>
         </div>
         <aside className="h-fit space-y-6 rounded-2xl border bg-gray-50 p-6">
           <h2 className="text-lg font-semibold">Order summary</h2>
@@ -76,7 +98,8 @@ export default function CheckoutPage() {
             {lines.map(({ item, product }) => <li key={`${item.productId}:${item.size}`} className="flex justify-between"><span>{product.name} ({item.size}) × {item.quantity}</span></li>)}
           </ul>
           <OrderSummary totals={totals} />
-          <Button type="submit" className="w-full">Place order</Button>
+          {formError ? <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{formError}</p> : null}
+          <Button type="submit" className="w-full" disabled={busy}>{busy ? "Placing order…" : "Place order"}</Button>
           <Link href="/cart" className="block text-center text-sm underline">Back to cart</Link>
         </aside>
       </form>
