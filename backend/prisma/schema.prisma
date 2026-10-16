@@ -20,6 +20,7 @@ model User {
   lastName     String?
   role         UserRole @default(CUSTOMER)
   orders       Order[]
+  reviews      Review[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -57,6 +58,7 @@ model Product {
   category    Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   images      ProductImage[]
   variants    ProductVariant[]
+  reviews     Review[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
@@ -140,6 +142,23 @@ model OrderItem {
   quantity  Int
 
   @@index([orderId])
+  @@index([productId])
+}
+
+/// One review per customer per product. authorName is stored so reviews survive account changes.
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  authorName String
+  rating     Int
+  title      String?
+  body       String
+  createdAt  DateTime @default(now())
+
+  @@unique([productId, userId])
   @@index([productId])
 }
 
