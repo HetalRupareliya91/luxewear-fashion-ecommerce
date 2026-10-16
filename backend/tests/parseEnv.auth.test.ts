@@ -22,5 +22,5 @@ test("COOKIE_SAMESITE is whitelisted and None forces Secure", () => {
 });
 
 test("production always uses Secure cookies", () => {
-  assert.equal(parseEnv({ NODE_ENV: "production", JWT_SECRET: "x".repeat(40) }).cookieSecure, true);
+  assert.equal(parseEnv({ NODE_ENV: "production", JWT_SECRET: "x".repeat(40), PAYMENT_WEBHOOK_SECRET: "w".repeat(40) }).cookieSecure, true);
 });

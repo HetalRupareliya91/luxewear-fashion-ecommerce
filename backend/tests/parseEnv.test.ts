@@ -21,5 +21,5 @@ test("reads valid values and ignores invalid ports", () => {
 test("production refuses weak or placeholder JWT secrets", () => {
   assert.throws(() => parseEnv({ NODE_ENV: "production", JWT_SECRET: "short" }), /JWT_SECRET/);
   assert.throws(() => parseEnv({ NODE_ENV: "production", JWT_SECRET: "replace-with-a-long-random-secret-value-123" }), /JWT_SECRET/);
-  assert.equal(parseEnv({ NODE_ENV: "production", JWT_SECRET: "x".repeat(40) }).jwtSecret.length, 40);
+  assert.equal(parseEnv({ NODE_ENV: "production", JWT_SECRET: "x".repeat(40), PAYMENT_WEBHOOK_SECRET: "w".repeat(40) }).jwtSecret.length, 40);
 });
