@@ -16,6 +16,8 @@ Sign-in uses an HttpOnly cookie (`lw_token`); the token is never in the JSON bod
 - `POST /api/auth/login` - `{ email, password }`. 200 with `{ user }`; every failure is `401 Invalid email or password`.
 - `GET /api/auth/me` - the signed-in user, or 401.
 - `POST /api/auth/logout` - clears the cookie.
+- `PATCH /api/auth/me` - `{ firstName?, lastName? }`. Changes the name of the signed-in user; an empty `lastName` clears it. An `email` or `role` in the body is ignored.
+- `POST /api/auth/change-password` - `{ currentPassword, newPassword }`. 400 with `details.currentPassword` when the current password is wrong. Existing sessions stay valid until they expire.
 
 Register and login allow 10 attempts per minute per IP.
 
