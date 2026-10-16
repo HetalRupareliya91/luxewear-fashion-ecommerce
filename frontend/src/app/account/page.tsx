@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Container } from "@/components/common/Container";
 import { ProfileCard } from "@/components/account/ProfileCard";
+import { ApiOrderList } from "@/components/account/ApiOrderList";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ORDERS_STORAGE_KEY, loadOrders, type Order } from "@/store/orders";
 import { formatPrice } from "@/utils/format";
@@ -27,7 +28,9 @@ export default function AccountPage() {
         {orders && orders.length > 0 ? <button type="button" onClick={clearHistory} className="text-sm underline">Clear history</button> : null}
       </div>
       <ProfileCard />
+      <ApiOrderList />
       <div className="mt-8">
+        <h2 className="mb-4 text-xl font-semibold">Orders on this device</h2>
         {orders === null ? <p className="text-gray-500">Loading…</p> : orders.length === 0 ? (
           <EmptyState title="No orders yet" message="Orders you place will show up here." actionLabel="Start shopping" actionHref="/shop" />
         ) : (
