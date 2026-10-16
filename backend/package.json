@@ -9,6 +9,7 @@
     "test": "node scripts/run-tests.mjs",
     "typecheck": "tsc -p tsconfig.test.json",
     "admin:create": "tsx scripts/create-admin.ts",
+    "db:seed": "tsx scripts/seed.ts",
     "start": "node dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev"
