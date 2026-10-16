@@ -16,6 +16,8 @@ Sign-in uses an HttpOnly cookie (`lw_token`); the token is never in the JSON bod
 - `POST /api/auth/login` - `{ email, password }`. 200 with `{ user }`; every failure is `401 Invalid email or password`.
 - `GET /api/auth/me` - the signed-in user, or 401.
 - `POST /api/auth/logout` - clears the cookie.
+- `PATCH /api/auth/me` - `{ firstName?, lastName? }`. Changes the name of the signed-in user; an empty `lastName` clears it. An `email` or `role` in the body is ignored.
+- `POST /api/auth/change-password` - `{ currentPassword, newPassword }`. 400 with `details.currentPassword` when the current password is wrong. Existing sessions stay valid until they expire.
 
 Register and login allow 10 attempts per minute per IP.
 
@@ -38,6 +40,17 @@ All money is **whole cents**. The client sends only SKUs and quantities; prices,
 ## Payments
 - `POST /api/payments/intent` - signed in, `{ orderId }`. Starts a payment for your own pending order and returns `{ reference, clientSecret, amount, currency, provider }`. The development provider is `mock`.
 - `POST /api/payments/webhook` - called by the payment company, not by browsers. The body is JSON `{ type, reference }` and the header `X-Signature: sha256=<hex>` must be the HMAC-SHA256 of the **raw body** with `PAYMENT_WEBHOOK_SECRET`. `payment.succeeded` moves the order to `PAID` (sending it twice is harmless); `payment.failed` leaves it pending. 401 for a bad signature. See [payments](payments.md).
+
+## Reviews
+- `GET /api/reviews?productId=` - public. `{ reviews, summary: { count, average, distribution } }` plus paging meta.
+- `POST /api/reviews` - signed in, `{ productId, rating (1-5), title?, body (10-2000 characters) }`. Only customers with a paid order containing the product can review it (403 otherwise), once each (409).
+- `DELETE /api/reviews/:id` - the author or an admin.
+
+## Wishlist
+All routes need a signed-in user.
+- `GET /api/wishlist` - `{ productIds }`, newest first.
+- `PUT /api/wishlist/:productId` and `DELETE /api/wishlist/:productId` - add or remove; both return the new list. 404 for an unknown product.
+- `POST /api/wishlist/merge` - `{ productIds }`. Adds the items saved in the browser right after sign-in; unknown ids are skipped.
 
 ## Status codes
 `400` validation failed - `401` missing/invalid token - `403` wrong role - `404` not found - `409` conflict (stock, order status) - `429` rate limited - `500` unexpected error.
