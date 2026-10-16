@@ -8,13 +8,14 @@ import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { createRateLimiter } from "./middleware/rateLimit.js";
 import { requestId } from "./middleware/requestId.js";
+import { captureRawBody } from "./middleware/rawBody.js";
 
 const app=express();
 app.use(cors({origin:env.frontendUrl,credentials:true}));
 app.use(helmet());
 app.use(requestId);
 app.use(morgan("dev"));
-app.use(express.json());
+app.use(express.json({ verify: captureRawBody }));
 app.use("/api", createRateLimiter({ windowMs: 60_000, max: 300 }));
 app.get("/",(_req,res)=>res.json({name:"LuxeWear API",version:"1.0.0",status:"running"}));
 app.use("/api",routes);
