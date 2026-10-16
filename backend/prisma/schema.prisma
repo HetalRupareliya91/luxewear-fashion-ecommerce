@@ -20,6 +20,7 @@ model User {
   lastName     String?
   role         UserRole @default(CUSTOMER)
   orders       Order[]
+  reviews      Review[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -57,6 +58,7 @@ model Product {
   category    Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   images      ProductImage[]
   variants    ProductVariant[]
+  reviews     Review[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
