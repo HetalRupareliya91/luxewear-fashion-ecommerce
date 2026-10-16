@@ -24,5 +24,16 @@ Register and login allow 10 attempts per minute per IP.
 - `GET /api/products/categories` - all categories, A to Z.
 - `GET /api/products/:slug` - one product; 404 when the slug is unknown.
 
+## Coupons
+- `POST /api/coupons/validate` - `{ code, subtotal }` (subtotal in cents). Always 200: `{ valid: true, code, type, discount }` or `{ valid: false, reason }`. Limited to 30 checks per minute per IP.
+
+## Checkout and orders
+All money is **whole cents**. The client sends only SKUs and quantities; prices, stock, coupon and totals are always worked out by the server.
+- `POST /api/checkout/quote` - `{ items: [{ sku, quantity }], shippingMethod?, couponCode? }`. Public. Returns the line items, `subtotal`, `discount`, `shipping`, `tax`, `total` and `amountToFreeShipping`. A wrong coupon is reported as `couponError` next to the totals. 404 for an unknown SKU, 409 when stock is short.
+- `POST /api/orders` - signed in. Same body plus `shippingAddress { firstName, lastName, line1, line2?, city, state?, postalCode, country, phone? }`. 201 with the order (`status: "PENDING"`, number like `LW-20261014-00007`). Stock is taken in the same database transaction. A bad coupon is a 400, short stock a 409.
+- `GET /api/orders` - the signed-in customer's orders, newest first (`?page=&limit=`).
+- `GET /api/orders/:id` - one of your orders (404 for anyone else's).
+- `POST /api/orders/:id/cancel` - cancels an unpaid order and returns the stock. 409 once the order is paid.
+
 ## Status codes
 `400` validation failed - `401` missing/invalid token - `403` wrong role - `404` not found - `409` conflict (stock, order status) - `429` rate limited - `500` unexpected error.
