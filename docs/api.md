@@ -35,5 +35,9 @@ All money is **whole cents**. The client sends only SKUs and quantities; prices,
 - `GET /api/orders/:id` - one of your orders (404 for anyone else's).
 - `POST /api/orders/:id/cancel` - cancels an unpaid order and returns the stock. 409 once the order is paid.
 
+## Payments
+- `POST /api/payments/intent` - signed in, `{ orderId }`. Starts a payment for your own pending order and returns `{ reference, clientSecret, amount, currency, provider }`. The development provider is `mock`.
+- `POST /api/payments/webhook` - called by the payment company, not by browsers. The body is JSON `{ type, reference }` and the header `X-Signature: sha256=<hex>` must be the HMAC-SHA256 of the **raw body** with `PAYMENT_WEBHOOK_SECRET`. `payment.succeeded` moves the order to `PAID` (sending it twice is harmless); `payment.failed` leaves it pending. 401 for a bad signature. See [payments](payments.md).
+
 ## Status codes
 `400` validation failed - `401` missing/invalid token - `403` wrong role - `404` not found - `409` conflict (stock, order status) - `429` rate limited - `500` unexpected error.
