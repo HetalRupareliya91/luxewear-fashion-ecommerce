@@ -12,6 +12,8 @@
 | `/order/success?id=` | Order confirmation |
 | `/account` | Orders placed on this device |
 | `/login`, `/register` | Sign in or create an account (cookie session from the API) |
+| `/account/settings` | Edit your name and change your password |
+| `/account/orders/[id]` | One account order, with cancel while it is unpaid |
 | `/wishlist` | Saved products |
 | `/contact`, `/faq`, `/returns` | Customer care pages |
 
