@@ -19,6 +19,12 @@ export function createMemoryUsers(): UserRepository & { all(): UserRecord[] } {
       users.push(record);
       return record;
     },
+    async update(id, data) {
+      const user = users.find((u) => u.id === id);
+      if (!user) throw AppError.notFound("User not found");
+      Object.assign(user, data);
+      return user;
+    },
     all: () => users,
   };
 }
