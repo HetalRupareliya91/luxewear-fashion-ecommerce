@@ -87,3 +87,26 @@ model ProductVariant {
 
   @@index([productId])
 }
+
+enum CouponType {
+  PERCENT
+  FIXED
+}
+
+/// Discounts. FIXED is an amount in cents, PERCENT is a whole number from 1 to 100.
+model Coupon {
+  id          String     @id @default(cuid())
+  code        String     @unique
+  type        CouponType
+  value       Int
+  active      Boolean    @default(true)
+  minSubtotal Int?
+  maxDiscount Int?
+  startsAt    DateTime?
+  expiresAt   DateTime?
+  usageLimit  Int?
+  usedCount   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
