@@ -19,6 +19,9 @@ model User {
   firstName    String
   lastName     String?
   role         UserRole @default(CUSTOMER)
+  orders       Order[]
+  reviews      Review[]
+  wishlist     WishlistItem[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -56,6 +59,8 @@ model Product {
   category    Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   images      ProductImage[]
   variants    ProductVariant[]
+  reviews     Review[]
+  wishlistedBy WishlistItem[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
@@ -87,3 +92,109 @@ model ProductVariant {
 
   @@index([productId])
 }
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+/// Money fields are whole cents. Items keep a copy of the name and price from the moment of purchase.
+model Order {
+  id              String      @id @default(cuid())
+  number          String      @unique
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email           String
+  status          OrderStatus @default(PENDING)
+  subtotal        Int
+  discount        Int         @default(0)
+  shipping        Int
+  tax             Int
+  total           Int
+  couponCode      String?
+  shippingMethod  String
+  shippingAddress Json
+  paymentRef      String?
+  items           OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([paymentRef])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  variantId String?
+  sku       String
+  name      String
+  size      String?
+  color     String?
+  unitPrice Int
+  quantity  Int
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+/// One review per customer per product. authorName is stored so reviews survive account changes.
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  authorName String
+  rating     Int
+  title      String?
+  body       String
+  createdAt  DateTime @default(now())
+
+  @@unique([productId, userId])
+  @@index([productId])
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
+}
+
+enum CouponType {
+  PERCENT
+  FIXED
+}
+
+/// Discounts. FIXED is an amount in cents, PERCENT is a whole number from 1 to 100.
+model Coupon {
+  id          String     @id @default(cuid())
+  code        String     @unique
+  type        CouponType
+  value       Int
+  active      Boolean    @default(true)
+  minSubtotal Int?
+  maxDiscount Int?
+  startsAt    DateTime?
+  expiresAt   DateTime?
+  usageLimit  Int?
+  usedCount   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+

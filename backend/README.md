@@ -8,9 +8,12 @@ Modular Express 5 + TypeScript API with Prisma/PostgreSQL.
 | `npm run dev` | Start the API with auto reload (http://localhost:5000) |
 | `npm run build` / `npm start` | Compile to `dist/` and run it |
 | `npm test` | Run the unit tests (Node test runner + tsx, no extra packages) |
-| `npm run typecheck` | Type check `src/` and `tests/` |
+| `npm run typecheck` | Type check `src/`, `tests/` and `scripts/` |
+| `npm run admin:create` | Create or promote an admin (needs `ADMIN_EMAIL` and `ADMIN_PASSWORD`) |
 | `npm run prisma:generate` | Generate the Prisma client |
 | `npm run prisma:migrate` | Create/apply a migration in development |
+| `npm run db:seed` | Add the sample catalogue and two coupons (safe to repeat) |
+| `npm run admin:create` | Create or promote an admin (see docs/auth.md) |
 
 ## Structure
 ```
@@ -21,15 +24,18 @@ src/
   validators/   input validation (primitives + auth payloads)
   utils/        money (integer cents), slug, pagination, apiResponse
   modules/      one folder per feature
-    auth/       password hashing (scrypt) and signed tokens
+    auth/       sign-up, sign-in, cookie sessions, password hashing (scrypt), signed tokens
     products/   catalog API and query parsing
     cart/       cart totals
-    coupons/    coupon rules
+    coupons/    coupon rules, service and /api/coupons
     shipping/   shipping costs
     tax/        tax calculation
-    orders/     status flow and order numbers
+    orders/     pricing, order placement and cancellation, status flow, order numbers
+    payments/   provider contract, signed webhook
+    wishlist/   saved products
+    users/      admin user management
     inventory/  stock reservation
-    reviews/    rating summaries
+    reviews/    verified-buyer reviews and rating summaries
     analytics/  revenue and best-seller summaries
 tests/          *.test.ts, one per module
 ```
